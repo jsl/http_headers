@@ -15,10 +15,16 @@ Set up your machine to pull gems from gems.github.com if you haven't already.  T
 
 == Quick Start
 
+Just require the library, create a new HttpHeaders object with the header string and start invoking methods.
+
+  require 'http_headers'
   h = HttpHeaders.new(header_str)
   h.content_type
   h.etag
   h.set_cookie # Will return an Array of String values if more than one match is found
+
+Other methods should just work for arbitrary attributes by lowercasing the attribute name and substituting 
+hyphens with underscores.
 
 == Implementation
 
@@ -38,12 +44,12 @@ desired behavior in a client library.
 
 Please write the author if you have any questions or feedback about this library.  Patches are welcome if you have ideas 
 about how the behavior of HttpHeaders can be improved for particular cases.  Please include specs using the associated 
-test suite if you make improvements, and I would also be happy to receive more 'fixtures' for new failure cases where the
-library can be improved.
+test suite if you make improvements, and I would also be happy to receive more fixtures consisting of HTTP strings of 
+failure cases indicating where the library can be improved.
 
 == References
 
-[1] The HTTP Header Field Definitions - http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+* The HTTP Header Field Definitions - http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
 
 == Author
 

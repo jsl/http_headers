@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "http_headers"
-  s.version  = "0.0.1"
+  s.version  = "0.0.2"
   s.date     = "2009-05-22"
   s.summary  = "Library for parsing the Curl header_str into attributes"
   s.email    = "justin@phq.org"

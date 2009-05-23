@@ -1,4 +1,4 @@
-# Parses a http header_str from Curl::Easy into component parts.
+# Class HttpHeaders parses a http header_str from Curl::Easy into component parts.
 class HttpHeaders
   
   attr_reader :content
