@@ -1,0 +1,50 @@
+= HttpHeaders
+
+HttpHeaders is a library for parsing HTTP-compliant header strings.  It was designed to process the 
+results from the header_str method on Curl::Easy objects in Ruby, but should work for other HTTP-compliant
+string formats. 
+
+It correctly parses the content type, response code and most other key-value fields from the HTTP response header,
+including keys that may appear multiple times in the header such as Set-Cookie.
+
+== Installation
+
+Set up your machine to pull gems from gems.github.com if you haven't already.  Then:
+  
+  sudo gem install jsl-http_headers
+
+== Quick Start
+
+  h = HttpHeaders.new(header_str)
+  h.content_type
+  h.etag
+  h.set_cookie # Will return an Array of String values if more than one match is found
+
+== Implementation
+
+HttpHeaders uses ruby's +method_missing+ in order to build queries for the given parameter dynamically, so
+it doesn't need to parse values for every field at the time that the HttpHeader object is instantiated with 
+a HTTP header string.
+
+== Possible Limitations
+
+Some attributes, such as Set-Cookie, may appear listed multiple times in the header.  Where this occurs, 
+we try to find all instances of the key and return an Array if multiple occurrences are found.  Otherwise,
+nothing is done in the case where there are multiple values for a cookie given as values of a particular key - 
+at this point the values won't be magically turned into an Array and it will be up to the user to program the
+desired behavior in a client library.  
+
+== Feedback
+
+Please write the author if you have any questions or feedback about this library.  Patches are welcome if you have ideas 
+about how the behavior of HttpHeaders can be improved for particular cases.  Please include specs using the associated 
+test suite if you make improvements, and I would also be happy to receive more 'fixtures' for new failure cases where the
+library can be improved.
+
+== References
+
+[1] The HTTP Header Field Definitions - http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+
+== Author
+
+Justin S. Leitgeb, <justin@phq.org>
