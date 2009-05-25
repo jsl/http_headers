@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Date: Mon, 25 May 2009 12:36:53 GMT
+Server: Apache/2
+Last-Modified: Wed, 01 Sep 2004 13:24:52 GMT
+ETag: "1edec-3e3073913b100"
+Accept-Ranges: bytes
+Content-Length: 126444
+Cache-Control: max-age=21600
+Expires: Mon, 25 May 2009 18:36:53 GMT
+P3P: policyref="http://www.w3.org/2001/05/P3P/p3p.xml"
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+

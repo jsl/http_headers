@@ -4,6 +4,7 @@ describe HttpHeaders do
   before do
     @h  = HttpHeaders.new(File.read(File.join(File.dirname(__FILE__), %w[fixtures headers.txt])))
     @h2 = HttpHeaders.new(File.read(File.join(File.dirname(__FILE__), %w[fixtures headers2.txt])))
+    @h3 = HttpHeaders.new(File.read(File.join(File.dirname(__FILE__), %w[fixtures headers3.txt])))
   end
   
   it "should have text/html as the content_type" do
@@ -20,6 +21,12 @@ describe HttpHeaders do
   
   it "should have an etag of pnDSjJtGvlc2WrX6VND/w0qxEc8" do
     @h2.etag.should == 'pnDSjJtGvlc2WrX6VND/w0qxEc8'
+  end
+  
+  # @h3 tests stripping an etag from a value section of a header where the value is wrapped in 
+  # quotes as given by the HTTP server.
+  it "should have an etag of 1edec-3e3073913b100 for headers3" do
+    @h3.etag.should == '1edec-3e3073913b100'
   end
   
   it "should have Fri, 22 May 2009 18:18:08 GMT for date" do

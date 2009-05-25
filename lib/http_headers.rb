@@ -36,6 +36,9 @@ class HttpHeaders
   # Returns the key from this tag, which should be a string with key separated
   # from val by ':'
   def value_from(tag)
-    tag.split(/:\W+/)[1]
+    val = tag.split(/:\s+/)[1]
+    
+    # Value may be surrounded by quotes in some cases.  Remove these extra quotes here.
+    val =~ /^\"(.*)\"$/ ? $1 : val
   end
 end
