@@ -7,6 +7,11 @@ string formats.
 It correctly parses the content type, response code and most other key-value fields from the HTTP response header,
 including keys that may appear multiple times in the header such as Set-Cookie.
 
+While parsing these header strings seems a very easy thing to do, the small variances in HTTP server responses make 
+it more challenging to process these strings than it may initially appear.  This library tries to account for these
+server variances by including a comprehensive test suite of HTTP header strings that the library has been tested
+against.
+
 == Installation
 
 Set up your machine to pull gems from gems.github.com if you haven't already.  Then:
@@ -26,7 +31,7 @@ Just require the library, create a new HttpHeaders object with the header string
 Other methods should just work for arbitrary attributes by lowercasing the attribute name and substituting 
 hyphens with underscores.
 
-== Implementation
+== Implementation Notes
 
 HttpHeaders uses ruby's +method_missing+ in order to build queries for the given parameter dynamically, so
 it doesn't need to parse values for every field at the time that the HttpHeader object is instantiated with 
