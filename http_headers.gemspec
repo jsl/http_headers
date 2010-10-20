@@ -1,13 +1,16 @@
 Gem::Specification.new do |s|
   s.name     = "http_headers"
-  s.version  = "0.0.2.2"
-  s.date     = "2009-05-25"
+  s.version  = "0.0.2.3"
   s.summary  = "Library for parsing the Curl header_str into attributes"
   s.email    = "justin@phq.org"
   s.homepage = "http://github.com/jsl/http_headers"
-  s.description = "Parses a HTTP header string into individual header fields"
+  s.description = <<-EOF
+    Simple, tested library to parses as HTTP header string into individual header fields.
+    Works with single as well as multi-valued attributes.  Based on the HTTP 1.1 Header
+    Field definition.
+  EOF
   s.has_rdoc = true
-  s.authors  = ["Justin Leitgeb"]
+  s.author   = "Justin Leitgeb"
   s.files    = [
     "Rakefile",
     "http_headers.gemspec",
