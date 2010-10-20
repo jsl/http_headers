@@ -56,6 +56,6 @@ failure cases indicating where the library can be improved.
 
 == Author
 
-Justin S. Leitgeb, <justin@stackbuilders.com>
+Justin S. Leitgeb, mailto:justin@stackbuilders.com
 
 Copyright (c) 2010 {Stack Builders Inc.}[http://stackbuilders.com]
