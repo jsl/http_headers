@@ -14,9 +14,7 @@ against.
 
 == Installation
 
-Set up your machine to pull gems from gems.github.com if you haven't already.  Then:
-  
-  sudo gem install jsl-http_headers
+  gem install http_headers
 
 == Quick Start
 
@@ -58,4 +56,6 @@ failure cases indicating where the library can be improved.
 
 == Author
 
-Justin S. Leitgeb, <justin@phq.org>
+Justin S. Leitgeb, <justin@stackbuilders.com>
+
+Copyright (c) 2010 {Stack Builders Inc.}[http://stackbuilders.com]
