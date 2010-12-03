@@ -1,77 +1,79 @@
 require 'spec_helper'
 
 describe HttpHeaders do
-  before do
-    @h  = HttpHeaders.new(File.read(File.join(File.dirname(__FILE__), %w[fixtures headers.txt])))
-    @h2 = HttpHeaders.new(File.read(File.join(File.dirname(__FILE__), %w[fixtures headers2.txt])))
-    @h3 = HttpHeaders.new(File.read(File.join(File.dirname(__FILE__), %w[fixtures headers3.txt])))
-  end
-  
-  it "should have text/html as the content_type" do
-    @h.version.should == 'HTTP/1.1'
+  it "should parse the version from the header string" do
+    HttpHeaders.new('HTTP/1.1 200 OK\r\n').version.should == 'HTTP/1.1'
   end
   
   it "should have 200 OK as the response code" do 
-    @h.response_code.should == '200 OK'
+    HttpHeaders.new('HTTP/1.1 200 OK\r\n').response_code.should == '200 OK'
   end
   
-  it "should have a nil etag for the first header file" do
-    @h.etag.should be_nil
+  it "should have an etag if one is not present in header string" do
+    HttpHeaders.new('HTTP/1.1 200 OK\r\n').etag.should be_nil
+  end
+
+  it "should correctly strip a field wrapped in quotes" do
+    HttpHeaders.new('ETag: "1edec-3e3073913b100"').etag.should == '1edec-3e3073913b100'
   end
   
-  it "should have an etag of pnDSjJtGvlc2WrX6VND/w0qxEc8" do
-    @h2.etag.should == 'pnDSjJtGvlc2WrX6VND/w0qxEc8'
+  it "should correctly parse a date field" do
+    HttpHeaders.new("Date: Fri, 22 May 2009 18:18:08 GMT").date.should == 'Fri, 22 May 2009 18:18:08 GMT'
   end
   
-  # @h3 tests stripping an etag from a value section of a header where the value is wrapped in 
-  # quotes as given by the HTTP server.
-  it "should have an etag of 1edec-3e3073913b100 for headers3" do
-    @h3.etag.should == '1edec-3e3073913b100'
+  it "should correctly parse an expires field" do
+    HttpHeaders.new("Expires: Fri, 22 May 2009 18:18:08 GMT").expires.should == 'Fri, 22 May 2009 18:18:08 GMT'
   end
   
-  it "should have Fri, 22 May 2009 18:18:08 GMT for date" do
-    @h2.date.should == 'Fri, 22 May 2009 18:18:08 GMT'
+  it "should properly parse the cache-control field" do
+    HttpHeaders.new('Cache-Control: private, max-age=0').cache_control.should == 'private, max-age=0'
   end
   
-  it "should have Fri, 22 May 2009 18:18:08 GMT for expires" do
-    @h2.expires.should == 'Fri, 22 May 2009 18:18:08 GMT'
+  it "should have correctly parse Last-Modfied" do
+    HttpHeaders.new('Last-Modified: Fri, 22 May 2009 15:35:08 GMT').last_modified.should == 'Fri, 22 May 2009 15:35:08 GMT'
   end
   
-  it "should have private, max-age=0 for cache_control" do
-    @h2.cache_control.should == 'private, max-age=0'
-  end
-  
-  it "should have Fri, 22 May 2009 15:35:08 GMT for last_modified" do
-    @h2.last_modified.should == 'Fri, 22 May 2009 15:35:08 GMT'
-  end
-  
-  it "should have GFE/2.0 for server" do
-    @h2.server.should == 'GFE/2.0'
+  it "should parse the server type" do
+    HttpHeaders.new("Server: GFE/2.0").server.should == 'GFE/2.0'
   end  
   
-  it "should have no-cache for pragma" do
-    @h.pragma.should == 'no-cache'
+  it "should correctly parse the pragma" do
+    HttpHeaders.new('Pragma: no-cache').pragma.should == 'no-cache'
   end
-  
-  it "should have chunked for transfer_encoding" do
-    @h2.transfer_encoding.should == 'chunked'
-  end
-  
-  describe "multi-valued keys like Set-cookie:" do
-    before do
-      @c = @h.set_cookie
+
+  describe "breaking lines in header" do
+    it "should parse fields when separated by a normal newline" do
+      header = HttpHeaders.new(<<-EOS)
+HTTP/1.1 200 OK
+Last-Modified: Fri, 22 May 2009 15:35:08 GMT
+ETag: pnDSjJtGvlc2WrX6VND/w0qxEc8
+EOS
+
+      header.etag.should == 'pnDSjJtGvlc2WrX6VND/w0qxEc8'
     end
-    
-    it "should return an Array if multiple values are present" do
-      @c.should be_a(Array)
+
+    it "should break lines when separated by \\r\\n" do
+      HttpHeaders.new("HTTP/1.1 200 OK\r\nServer: Sun-ONE-Web-Server/6.1\r\nDate: Fri, 22 May 2009 12:53:02 GMT\r\n").date.should == "Fri, 22 May 2009 12:53:02 GMT"
+    end
+  end
+
+  describe "multi-valued keys" do
+    before do
+      @headers = <<EOS
+HTTP/1.1 200 OK
+Server: Sun-ONE-Web-Server/6.1
+Set-cookie: RMID=21167df34c454a16a02ee2e1; expires=Saturday, 22-May-2010 12:53:02 GMT; path=/; domain=.nytimes.com
+Set-cookie: adxcs=-; path=/; domain=.nytimes.com
+Set-cookie: adxcs=-; path=/; domain=.nytimes.com
+EOS
     end
     
     it "should have three cookies" do
-      @c.size.should == 3
+      HttpHeaders.new(@headers).set_cookie.size.should == 3
     end
     
     it "should have adxcs=-; path=/; domain=.nytimes.com as value for one cookie" do
-      @c.include?("adxcs=-; path=/; domain=.nytimes.com").should be_true
+      HttpHeaders.new(@headers).set_cookie.include?("adxcs=-; path=/; domain=.nytimes.com").should be_true
     end
   end
 end
