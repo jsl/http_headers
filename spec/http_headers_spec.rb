@@ -41,6 +41,23 @@ describe HttpHeaders do
     HttpHeaders.new('Pragma: no-cache').pragma.should == 'no-cache'
   end
 
+  describe "#fields" do
+
+    before {pending}
+    
+    it "should return a collection of fields in the HTTP header" do
+      HttpHeaders.new('Pragma: no-cache\r\nCache-Control: private').field_names.should == ['Pragma', 'Cache-Control']
+    end
+
+    it "should not include the header" do
+      HttpHeaders.new('HTTP/1.1 200 OK\r\n').response_code.should == [ ]      
+    end
+
+    it "should remove duplicates from the list" do
+      HttpHeaders.new('Set-Cookie: foo\r\nSet-Cookie: bar').field_names.should == ['Set-Cookie']      
+    end
+  end
+  
   describe "breaking lines in header" do
     it "should parse fields when separated by a normal newline" do
       header = HttpHeaders.new(<<-EOS)
@@ -55,6 +72,20 @@ EOS
     it "should break lines when separated by \\r\\n" do
       HttpHeaders.new("HTTP/1.1 200 OK\r\nServer: Sun-ONE-Web-Server/6.1\r\nDate: Fri, 22 May 2009 12:53:02 GMT\r\n").date.should == "Fri, 22 May 2009 12:53:02 GMT"
     end
+  end
+
+  describe "strict mode" do
+    it "should not recognize headers with values containing _ if strict mode is on" do
+      HttpHeaders.new("Foo_bar: baz", :strict => true).foo_bar.should be_nil  
+    end
+
+    it "should recognize headers with values containing _ if strict mode is off" do
+      HttpHeaders.new("Foo_bar: baz", :strict => false).foo_bar.should == 'baz'
+    end
+
+    it "should have strict mode on by default" do
+      HttpHeaders.new("Foo_bar: baz").strict_mode.should be_true      
+    end    
   end
 
   describe "multi-valued keys" do
